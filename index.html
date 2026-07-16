@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>IBO Advisors Dashboard — Crown Acquisitions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+            padding: 24px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+        .header .subtitle { color: #a1a1aa; font-size: 14px; margin-top: 4px; }
+        .header-right { text-align: right; }
+        .back-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 6px 14px;
+            border-radius: 8px;
+            color: #a1a1aa;
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .back-link:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .timestamp { color: #52525b; font-size: 12px; }
+
+        /* MICHAEL CHASEN BANNER */
+        .chasen-banner {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .chasen-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .chasen-info h3 { font-size: 16px; font-weight: 600; color: #fff; }
+        .chasen-info p { font-size: 13px; color: #a1a1aa; margin-top: 2px; }
+        .chasen-stats { margin-left: auto; display: flex; gap: 24px; text-align: center; }
+        .chasen-stat .val { font-size: 20px; font-weight: 700; color: #a78bfa; }
+        .chasen-stat .lbl { font-size: 11px; color: #71717a; text-transform: uppercase; margin-top: 2px; }
+
+        /* SUMMARY CARDS */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .summary-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .summary-card .label { font-size: 12px; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .summary-card .value { font-size: 28px; font-weight: 700; color: #fff; }
+        .summary-card .subtext { font-size: 12px; color: #52525b; margin-top: 4px; }
+        .green { color: #4ade80 !important; }
+        .purple { color: #a78bfa !important; }
+        .amber { color: #fbbf24 !important; }
+        .blue { color: #60a5fa !important; }
+
+        /* SECTION TITLE */
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        /* PARTNER GRID */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .partner-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 18px;
+        }
+        .partner-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .partner-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
+        }
+        .partner-name { font-size: 15px; font-weight: 600; color: #fff; }
+        .partner-role { font-size: 12px; color: #71717a; margin-top: 1px; }
+        .partner-status {
+            margin-left: auto;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-intro { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .status-active { background: rgba(99,102,241,0.2); color: #a78bfa; }
+        .status-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+        .partner-deals { margin-top: 10px; }
+        .partner-deal-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .deal-company { color: #e4e4e7; font-weight: 500; }
+        .deal-profit { color: #4ade80; font-weight: 600; }
+        .deal-badge {
+            padding: 2px 8px; border-radius: 10px; font-size: 11px;
+        }
+        .badge-closing { background: rgba(74,222,128,0.2); color: #4ade80; }
+        .badge-referred { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .badge-intro { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .badge-pipeline { background: rgba(113,113,122,0.2); color: #a1a1aa; }
+
+        .partner-empty { font-size: 13px; color: #52525b; font-style: italic; padding: 6px 0; }
+
+        /* DEALS TABLE */
+        .deals-section { margin-bottom: 32px; }
+        .deal-row {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            gap: 16px;
+        }
+        .deal-row.closing { border-color: rgba(74,222,128,0.3); }
+        .deal-row.referred { border-color: rgba(251,191,36,0.25); }
+        .deal-company-name { font-size: 16px; font-weight: 600; color: #fff; min-width: 160px; }
+        .deal-meta { font-size: 12px; color: #71717a; margin-top: 2px; }
+        .deal-profit-box { text-align: center; min-width: 100px; }
+        .deal-profit-box .profit-val { font-size: 20px; font-weight: 700; color: #4ade80; }
+        .deal-profit-box .profit-lbl { font-size: 11px; color: #52525b; text-transform: uppercase; }
+        .deal-timeline { text-align: center; min-width: 130px; }
+        .deal-timeline .timeline-val { font-size: 13px; font-weight: 500; color: #e4e4e7; }
+        .deal-timeline .timeline-lbl { font-size: 11px; color: #52525b; }
+        .deal-source { font-size: 12px; color: #a1a1aa; flex: 1; }
+        .deal-status-badge {
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 40px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            font-size: 12px;
+            color: #52525b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer a { color: #6366f1; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1>🏦 IBO Advisors</h1>
+            <div class="subtitle">Independent Buyout Network — Crown Acquisitions Partnership</div>
+        </div>
+        <div class="header-right">
+            <a href="https://kimaniclark.github.io/cfe-dashboard/" class="back-link">← CFE Dashboard</a>
+            <div class="timestamp">Last updated: July 16, 2026 — Alan closing, Powerhouse referred</div>
+        </div>
+    </div>
+
+    <!-- MICHAEL CHASEN BANNER -->
+    <div class="chasen-banner">
+        <div class="chasen-avatar">MC</div>
+        <div class="chasen-info">
+            <h3>Michael Chasen — IBO Advisors</h3>
+            <p>Blackboard founder ($1.64B exit) • Independent Buyout (ESOP) specialist • 54% better returns than PE • Deals: $3M+ EBITDA targets</p>
+        </div>
+        <div class="chasen-stats">
+            <div class="chasen-stat">
+                <div class="val">4</div>
+                <div class="lbl">Intros Made</div>
+            </div>
+            <div class="chasen-stat">
+                <div class="val">54%</div>
+                <div class="lbl">Better Than PE</div>
+            </div>
+            <div class="chasen-stat">
+                <div class="val">5mo</div>
+                <div class="lbl">Payment Timeline</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="label">Network Partners</div>
+            <div class="value purple">4</div>
+            <div class="subtext">Introduced to Michael Chasen</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Deals in Pipeline</div>
+            <div class="value amber">2</div>
+            <div class="subtext">Alan (closing) + Powerhouse (referred)</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Closest to Close</div>
+            <div class="value green">Alan</div>
+            <div class="subtext">~$10M profit • Dolores referral</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Payment Timeline</div>
+            <div class="value blue">5 mo</div>
+            <div class="subtext">From signing to payment</div>
+        </div>
+    </div>
+
+    <!-- NETWORK PARTNERS -->
+    <div class="section-title">🤝 Network Partners — Introduced to Michael Chasen</div>
+    <div class="partners-grid" style="margin-bottom: 32px;">
+
+        <div class="partner-card">
+            <div class="partner-header">
+                <div class="partner-avatar">DH</div>
+                <div>
+                    <div class="partner-name">Dolores Hirschmann</div>
+                    <div class="partner-role">Epic Network • OBM / Business Strategist</div>
+                </div>
+                <span class="partner-status status-active">Active</span>
+            </div>
+            <div class="partner-deals">
+                <div class="partner-deal-row">
+                    <span class="deal-company">Alan's Company</span>
+                    <span class="deal-profit">~$10M profit</span>
+                    <span class="deal-badge badge-closing">Closing</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="partner-card">
+            <div class="partner-header">
+                <div class="partner-avatar">CC</div>
+                <div>
+                    <div class="partner-name">Chris Cresswell</div>
+                    <div class="partner-role">New Enterprise Ventures • 350 healthcare advisors</div>
+                </div>
+                <span class="partner-status status-intro">Intro'd</span>
+            </div>
+            <div class="partner-deals">
+                <div class="partner-empty">No deals yet — monitoring</div>
+            </div>
+        </div>
+
+        <div class="partner-card">
+            <div class="partner-header">
+                <div class="partner-avatar">JA</div>
+                <div>
+                    <div class="partner-name">Josh Aguilar</div>
+                    <div class="partner-role">Infinite Ventures TX • Epic Network</div>
+                </div>
+                <span class="partner-status status-intro">Intro'd</span>
+            </div>
+            <div class="partner-deals">
+                <div class="partner-empty">No deals yet — monitoring</div>
+            </div>
+        </div>
+
+        <div class="partner-card">
+            <div class="partner-header">
+                <div class="partner-avatar">DR</div>
+                <div>
+                    <div class="partner-name">Deanna Rogers</div>
+                    <div class="partner-role">Epic Network</div>
+                </div>
+                <span class="partner-status status-intro">Intro'd</span>
+            </div>
+            <div class="partner-deals">
+                <div class="partner-empty">No deals yet — monitoring</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DEALS PIPELINE -->
+    <div class="section-title">💼 Deal Pipeline</div>
+    <div class="deals-section">
+
+        <div class="deal-row closing">
+            <div>
+                <div class="deal-company-name">Alan's Company</div>
+                <div class="deal-meta">Owner: Alan • Referred by Dolores Hirschmann</div>
+            </div>
+            <div class="deal-profit-box">
+                <div class="profit-val">~$10M</div>
+                <div class="profit-lbl">Profit</div>
+            </div>
+            <div class="deal-timeline">
+                <div class="timeline-val">+5 months</div>
+                <div class="timeline-lbl">from signing date</div>
+            </div>
+            <div class="deal-source">Source: Dolores Hirschmann referral</div>
+            <span class="deal-status-badge" style="background: rgba(74,222,128,0.2); color: #4ade80;">🟢 Closing</span>
+        </div>
+
+        <div class="deal-row referred">
+            <div>
+                <div class="deal-company-name">Powerhouse</div>
+                <div class="deal-meta">Brad Powers • powerhousecos.com • Brian Carey referral</div>
+            </div>
+            <div class="deal-profit-box">
+                <div class="profit-val">$12M</div>
+                <div class="profit-lbl">Revenue</div>
+            </div>
+            <div class="deal-timeline">
+                <div class="timeline-val">TBD</div>
+                <div class="timeline-lbl">pending intro</div>
+            </div>
+            <div class="deal-source">Refer to Michael Chasen • CFE candidate too</div>
+            <span class="deal-status-badge" style="background: rgba(251,191,36,0.15); color: #fbbf24;">⏳ Refer to IBO</span>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div>Crown Acquisitions • IBO Advisors Partnership Dashboard</div>
+        <div><a href="https://kimaniclark.github.io/cfe-dashboard/">← Back to CFE Dashboard</a></div>
+    </div>
+
+</body>
+</html>
